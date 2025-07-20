@@ -1,0 +1,55 @@
+// Figure 3: Complex Tree
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t p2, p3, p4, p5, p6, p7, p8;
+
+    printf("P1 (PID: %d)\n", getpid());
+
+    p2 = fork();
+    if (p2 == 0) {
+        printf("P2 (PID: %d, Parent: %d)\n", getpid(), getppid());
+        p4 = fork();
+        if (p4 == 0) {
+            printf("P4 (PID: %d, Parent: %d)\n", getpid(), getppid());
+            p6 = fork();
+            if (p6 == 0) {
+                printf("P6 (PID: %d, Parent: %d)\n", getpid(), getppid());
+            } else {
+                wait(NULL); // Wait for P6
+            }
+        } else {
+            wait(NULL); // Wait for P4
+        }
+    } else {
+        p3 = fork();
+        if (p3 == 0) {
+            printf("P3 (PID: %d, Parent: %d)\n", getpid(), getppid());
+            p5 = fork();
+            if (p5 == 0) {
+                printf("P5 (PID: %d, Parent: %d)\n", getpid(), getppid());
+                p7 = fork();
+                if (p7 == 0) {
+                    printf("P7 (PID: %d, Parent: %d)\n", getpid(), getppid());
+                } else {
+                    p8 = fork();
+                    if (p8 == 0) {
+                        printf("P8 (PID: %d, Parent: %d)\n", getpid(), getppid());
+                    } else {
+                        wait(NULL); wait(NULL); // Wait for P7, P8
+                    }
+                }
+            } else {
+                wait(NULL); // Wait for P5
+            }
+        } else {
+            wait(NULL); wait(NULL); // Wait for P2, P3
+        }
+    }
+
+    return 0;
+}
