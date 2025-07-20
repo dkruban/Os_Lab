@@ -1,0 +1,27 @@
+// Figure 2: P1 -> P2 and P3 (2 child processes)
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t pid1, pid2;
+
+    printf("P1 (PID: %d)\n", getpid());
+
+    pid1 = fork();
+    if (pid1 == 0) {
+        printf("P2 (PID: %d, Parent PID: %d)\n", getpid(), getppid());
+    } else {
+        pid2 = fork();
+        if (pid2 == 0) {
+            printf("P3 (PID: %d, Parent PID: %d)\n", getpid(), getppid());
+        } else {
+            wait(NULL);
+            wait(NULL);
+        }
+    }
+
+    return 0;
+}
